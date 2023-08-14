@@ -1,14 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from "@nestjs/common";
+import { AppService } from "./app.service";
 import { ConfigService } from "@nestjs/config";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private configService: ConfigService) {}
+  constructor(private readonly appService: AppService) {
+  }
 
   @Get()
   getHello(): string {
-    console.log(this.configService.get('supaBaseUrl'))
     return this.appService.getHello();
   }
 }
