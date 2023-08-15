@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from "@nestjs/common";
+import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 import { AuthService } from "../auth.service";
 import { UserDto } from "../dto/user.dto";
@@ -20,6 +20,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
   }
 
   async use(req: Request, res: Response, next: NextFunction) {
+    if (!req.headers.authorization) throw new UnauthorizedException('Not Authorized')
     const token = req.headers.authorization.split(" ")[1];
     const decode: any = verify(token, this.configService.get("JWT_SECRET"));
     const user: UserDto = await this.authService.findOne(decode.id);

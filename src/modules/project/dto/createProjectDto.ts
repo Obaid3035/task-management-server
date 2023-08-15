@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -8,4 +8,7 @@ export class CreateProjectDto {
   @IsNotEmpty()
   @IsString()
   deadline: string;
+
+  @IsArray()
+  users: number[]
 }

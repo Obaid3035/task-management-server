@@ -29,19 +29,14 @@ export class AuthService {
       hashedPassword = await AuthService.hashPassword(password);
     }
 
-    await this.supabaseService
+    const { data } = await this.supabaseService
       .getSupabase()
       .from("User")
       .insert<createUserDto>({
       ...newUser,
       password: hashedPassword
-    });
-
-    const { data } = await this.supabaseService
-      .getSupabase()
-      .from("User")
-      .select("id")
-      .eq("email", email);
+    })
+      .select('id');
 
     console.log("********** User Registered Successfully ***********");
     return this.generateToken(data[0].id)
