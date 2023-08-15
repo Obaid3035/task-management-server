@@ -29,7 +29,10 @@ export class AuthService {
       hashedPassword = await AuthService.hashPassword(password);
     }
 
-    await this.supabaseService.getSupabase().from("User").insert<createUserDto>({
+    await this.supabaseService
+      .getSupabase()
+      .from("User")
+      .insert<createUserDto>({
       ...newUser,
       password: hashedPassword
     });
@@ -80,8 +83,24 @@ export class AuthService {
   private static async hashPassword(password: string): Promise<string> {
     return hash(password, 10);
   }
-  private async generateToken(id): Promise<string> {
+  private async generateToken(id: number): Promise<string> {
     return sign({ id }, this.configService.get("JWT_SECRET"));
   }
+
+  async findOne(userId: number) {
+    const { data, error } = await this.supabaseService
+      .getSupabase()
+      .from('User')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if(error) {
+      throw new NotFoundException('User not found');
+    }
+    return data;
+  }
+
+
 
 }

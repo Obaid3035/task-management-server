@@ -6,6 +6,7 @@ import { config } from "./config";
 import { SupabaseService } from "./modules/supabase/supabase.service";
 import { AuthModule } from "./modules/auth/auth.module";
 import { APP_PIPE } from "@nestjs/core";
+import { ProjectModule } from "./modules/project/project.module";
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { APP_PIPE } from "@nestjs/core";
       isGlobal: true,
       load: [config]
     }),
-    AuthModule
+    AuthModule,
+    ProjectModule
   ],
   controllers: [AppController],
   providers: [AppService, SupabaseService, {
