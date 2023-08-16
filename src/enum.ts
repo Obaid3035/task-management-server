@@ -1,7 +1,7 @@
 export enum Status {
   IN_PROGRESS = 'In Progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
+  COMPLETED = 'Completed',
+  CANCELLED = 'Cancelled',
 }
 
 export enum Priority {

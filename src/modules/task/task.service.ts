@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { SupabaseService } from "../supabase/supabase.service";
-import { UserDto } from "../auth/dto/user.dto";
 import { CreateTaskDto } from "./dto/CreateTaskDto";
 import { Status } from "../../enum";
 
@@ -42,10 +41,10 @@ export class TaskService {
     };
   }
 
-  async findAllTasks(projectId: number){
+  async findAllTasks(projectId: number) {
     const { data } = await this.supabaseService
       .getSupabase()
-      .from('Task')
+      .from("Task")
       .select(
         `id,
         title,
@@ -55,7 +54,35 @@ export class TaskService {
         created_at,
         deadline, 
         UserTask(id, User(id, name))`)
-      .eq('project_id', projectId)
-    return data
+      .eq("project_id", projectId);
+    return data;
+  }
+
+  async statusToCompleted(task_id: number) {
+    await this.supabaseService
+      .getSupabase()
+      .from("Task")
+      .update({
+        status: Status.COMPLETED
+      })
+      .eq('id', task_id)
+
+    return {
+      updated: true
+    }
+  }
+
+  async statusToCancelled(task_id: number) {
+    await this.supabaseService
+      .getSupabase()
+      .from("Task")
+      .update({
+        status: Status.CANCELLED
+      })
+      .eq('id', task_id)
+
+    return {
+      updated: true
+    }
   }
 }
