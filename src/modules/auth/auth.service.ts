@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { SupabaseService } from "../supabase/supabase.service";
 import { createUserDto } from "./dto/createUserDto";
-import { hash, compare } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { ConfigService } from "@nestjs/config";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -33,13 +33,13 @@ export class AuthService {
       .getSupabase()
       .from("User")
       .insert<createUserDto>({
-      ...newUser,
-      password: hashedPassword
-    })
-      .select('id');
+        ...newUser,
+        password: hashedPassword
+      })
+      .select("id");
 
     console.log("********** User Registered Successfully ***********");
-    return this.generateToken(data[0].id)
+    return this.generateToken(data[0].id);
   }
 
   async login(userData: LoginUserDto): Promise<string> {
@@ -48,6 +48,7 @@ export class AuthService {
     console.log("********** User logged in Successfully ***********");
     return this.generateToken(user.id);
   }
+
   async authenticate(userData: LoginUserDto) {
     const { data } = await this.supabaseService.getSupabase()
       .from("User")
@@ -65,6 +66,7 @@ export class AuthService {
     }
     return data[0];
   }
+
   private async isEmailAlreadyUsed(email: string): Promise<boolean | PostgrestError> {
     const { data, error } = await this.supabaseService
       .getSupabase()
@@ -75,9 +77,11 @@ export class AuthService {
 
     return data.length > 0 || error;
   }
+
   private static async hashPassword(password: string): Promise<string> {
     return hash(password, 10);
   }
+
   private async generateToken(id: number): Promise<string> {
     return sign({ id }, this.configService.get("JWT_SECRET"));
   }
@@ -85,17 +89,46 @@ export class AuthService {
   async findOne(userId: number) {
     const { data, error } = await this.supabaseService
       .getSupabase()
-      .from('User')
-      .select('*')
-      .eq('id', userId)
+      .from("User")
+      .select("*")
+      .eq("id", userId)
       .single();
 
-    if(error) {
-      throw new NotFoundException('User not found');
+    if (error) {
+      throw new NotFoundException("User not found");
     }
     return data;
   }
 
 
+  async getAllUserForProjectSelect(currentUserId: number) {
+    const { data, error } = await this.supabaseService
+      .getSupabase()
+      .from("User")
+      .select(`
+      id,
+      name
+      `)
+      .neq("id", currentUserId);
+    if (error) {
+      throw new BadRequestException("Something went wrong");
+    }
+    return data;
+  }
+
+  async getAllUserForTaskSelect(projectId: number) {
+    const { data, error } = await this.supabaseService
+      .getSupabase()
+      .from("UserProject")
+      .select(`
+      User(id, name)
+      `)
+      .eq("project_id", projectId);
+
+    if (error) {
+      throw new BadRequestException("Something went wrong");
+    }
+    return data;
+  }
 
 }
