@@ -20,8 +20,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
   }
 
   async use(req: Request, res: Response, next: NextFunction) {
-    if (!req.headers.authorization) throw new UnauthorizedException('Not Authorized')
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.cookies['authToken'];
     const decode: any = verify(token, this.configService.get("JWT_SECRET"));
     const user: UserDto = await this.authService.findOne(decode.id);
     if (!user) {
