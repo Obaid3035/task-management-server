@@ -41,6 +41,17 @@ export class AuthController {
     })
   }
 
+  @Post('logout')
+  async logout(@Res() res) {
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    });
+    res.json({ message: 'Logged out' });
+  }
+
   @Get("/user-project")
   async getAllUserForProjectSelect(@CurrentUser() currentUser: UserDto) {
     return await this.authService.getAllUserForProjectSelect(currentUser.id);
