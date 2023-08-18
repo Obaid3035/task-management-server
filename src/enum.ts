@@ -1,10 +1,10 @@
-export enum Status {
+export enum TASK_Status {
   IN_PROGRESS = 'In Progress',
   COMPLETED = 'Completed',
   CANCELLED = 'Cancelled',
 }
 
-export enum Priority {
+export enum TASK_Priority {
   HIGH = 'High',
   MEDIUM = 'Medium',
   Low = 'Low',

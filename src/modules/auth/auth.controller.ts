@@ -41,6 +41,13 @@ export class AuthController {
     })
   }
 
+  @Post()
+  async authorize() {
+    return {
+      authorized: true
+    }
+  }
+
   @Post('logout')
   async logout(@Res() res) {
     res.clearCookie('authToken', {

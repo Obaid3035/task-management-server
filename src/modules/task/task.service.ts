@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { SupabaseService } from "../supabase/supabase.service";
 import { CreateTaskDto } from "./dto/CreateTaskDto";
-import { Status } from "../../enum";
+import { TASK_Status as Status } from "../../enum";
 
 
 @Injectable()
